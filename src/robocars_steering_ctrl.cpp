@@ -269,7 +269,7 @@ void RosInterface::controlActuator (uint32_t steering_value) {
     steeringMsg.header.stamp = ros::Time::now();
     steeringMsg.header.seq=1;
     steeringMsg.header.frame_id = "mainSteering";
-    steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_min,steering_value);
+    steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
 
     act_steering_pub.publish(steeringMsg);
 }
