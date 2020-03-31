@@ -150,7 +150,7 @@ class onManualDriving
             transit<onIdle>();
         };
 
-        void react (RadioCHannelEvent const & e) override {
+        void react (RadioChannelEvent const & e) override {
             ri->controlActuator(e.radio_channel_value); 
         }
 
@@ -232,7 +232,7 @@ void RosInterface::initSub () {
 
 void RosInterface::channels_msg_cb(const robocars_msgs::robocars_radio_channels::ConstPtr& msg){
     
-    send_event(RadioCHannelEvent(msg->ch1));
+    send_event(RadioChannelEvent(msg->ch1));
 }
 
 void RosInterface::state_msg_cb(const robocars_msgs::robocars_brain_state::ConstPtr& msg) {
