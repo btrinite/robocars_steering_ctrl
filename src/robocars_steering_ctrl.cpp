@@ -91,7 +91,7 @@ class onQualibtrateMode
             transit<onIdle>();
         }
 
-        void react (RadioCHannelEvent const & e) override {
+        void react (RadioChannelEvent const & e) override {
             ri->qualibrate(e.radio_channel_value); 
         };
 

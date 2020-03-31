@@ -43,7 +43,7 @@ class RobocarsStateMachine
         virtual void react(AutonomousDrivingEvent         const & e) { logEvent(e); };
         virtual void react(EnterQualibrateModeEvent       const & e) { logEvent(e); };
         virtual void react(LeaveQualibrateModeEvent       const & e) { logEvent(e); };
-        virtual void react(RadioCHannelEvent              const & e) {  };
+        virtual void react(RadioChannelEvent              const & e) {  };
 
         virtual void entry(void) { 
             ROS_INFO("State %s: entering", getStateName()); 
