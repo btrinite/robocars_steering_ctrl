@@ -240,6 +240,7 @@ void RosInterface::state_msg_cb(const robocars_msgs::robocars_brain_state::Const
     if (msg->state != last_state) {
         switch (msg->state) {
             case robocars_msgs::robocars_brain_state::BRAIN_STATE_IDLE:
+                ROS_INFO("Event IdleStatusEvent");
                 send_event(IdleStatusEvent());        
             break;
             case robocars_msgs::robocars_brain_state::BRAIN_STATE_MANUAL_DRIVING:
