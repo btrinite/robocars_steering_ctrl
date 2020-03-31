@@ -123,6 +123,7 @@ class onIdle
         };
 
         void react(TickEvent const & e) override {
+            onRunningMode::react(e);
             ri->maintainIdleActuator();
         };
 
@@ -155,6 +156,7 @@ class onManualDriving
         }
 
         void react (TickEvent const & e) override {
+            onRunningMode::react(e);
         };
 
 };
@@ -182,6 +184,7 @@ class onAutonomousDriving
         };
 
         virtual void react(TickEvent                      const & e) override { 
+            onRunningMode::react(e);
         };
 };
 
@@ -293,10 +296,12 @@ void RosInterface::initQualibration() {
 
 void RosInterface::qualibrate (uint32_t steering_value) {
     if (steering_value < command_input_min) {
-        nh.setParam ("command_input_min", (int)steering_value);         
+        nh.setParam ("command_input_min", (int)steering_value);
+        command_input_min = steering_value;         
     }
     if (steering_value > command_input_max) {
         nh.setParam ("command_input_max", (int)steering_value);         
+        command_input_max = steering_value;         
     }
 }
 
