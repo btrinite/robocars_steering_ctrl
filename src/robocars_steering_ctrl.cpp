@@ -236,11 +236,10 @@ void RosInterface::channels_msg_cb(const robocars_msgs::robocars_radio_channels:
 }
 
 void RosInterface::state_msg_cb(const robocars_msgs::robocars_brain_state::ConstPtr& msg) {
-    static u_int32_t last_state = 0;
+    static u_int32_t last_state = -1;
     if (msg->state != last_state) {
         switch (msg->state) {
             case robocars_msgs::robocars_brain_state::BRAIN_STATE_IDLE:
-                ROS_INFO("Event IdleStatusEvent");
                 send_event(IdleStatusEvent());        
             break;
             case robocars_msgs::robocars_brain_state::BRAIN_STATE_MANUAL_DRIVING:
@@ -250,6 +249,7 @@ void RosInterface::state_msg_cb(const robocars_msgs::robocars_brain_state::Const
                 send_event(AutonomousDrivingEvent());        
             break;
         }
+        last_state=msg->state;
     }
     
 }
