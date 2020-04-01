@@ -9,6 +9,8 @@
 #include <tinyfsm.hpp>
 #include <ros/ros.h>
 #include <stdio.h>
+#include <algorithm> 
+#include <cmath>
 
 #include <robocars_msgs/robocars_actuator_output.h>
 #include <robocars_msgs/robocars_actuator_ctrl_mode.h>
@@ -198,6 +200,13 @@ uint32_t mapRange(uint32_t in1,uint32_t in2,uint32_t out1,uint32_t out2,uint32_t
   return out1 + ((value-in1)*(out2-out1))/(in2-in1);
 }
 
+uint32_t mapRange(_Float32 in1,_Float32 in2,_Float32 out1,_Float32 out2,_Float32 value)
+{
+  if (value<in1) {value=in1;}
+  if (value>in2) {value=in2;}
+  return out1 + ((value-in1)*(out2-out1))/(in2-in1);
+}
+
 void RosInterface::initParam() {
     if (!nh.hasParam("command_input_min")) {
         nh.setParam ("command_input_min", 363);       
@@ -273,6 +282,7 @@ void RosInterface::controlActuator (uint32_t steering_value) {
     steeringMsg.header.seq=1;
     steeringMsg.header.frame_id = "mainSteering";
     steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
+    steeringMsg.norm = std::fmax((_Float32)0.0,mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value));
 
     act_steering_pub.publish(steeringMsg);
 }
