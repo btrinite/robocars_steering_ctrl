@@ -282,7 +282,7 @@ void RosInterface::controlActuator (uint32_t steering_value) {
     steeringMsg.header.seq=1;
     steeringMsg.header.frame_id = "mainSteering";
     steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
-    steeringMsg.norm = std::fmax((_Float32)0.0,mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value));
+    steeringMsg.norm = mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value);
 
     act_steering_pub.publish(steeringMsg);
 }
