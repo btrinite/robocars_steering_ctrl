@@ -295,6 +295,7 @@ void RosInterface::maintainIdleActuator () {
     steeringMsg.header.seq=1;
     steeringMsg.header.frame_id = "mainSteering";
     steeringMsg.pwm = 1500;
+    steeringMsg.norm = 0.0;
 
     act_steering_pub.publish(steeringMsg);
 }
