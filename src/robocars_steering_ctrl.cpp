@@ -1,6 +1,6 @@
 /**
  * @file robocars_steering_ctrl.cpp
- * @brief Main car FSM, hold car global state.
+ * @brief drive steering actuator accoridingly to current mode and orders received.
  * 
  * Copyright (c) 2020 Benoit TRINITE
  *
@@ -281,7 +281,7 @@ void RosInterface::initSub () {
 }
 
 void RosInterface::channels_msg_cb(const robocars_msgs::robocars_radio_channels::ConstPtr& msg){    
-    send_event(RadioChannelEvent(msg->ch1));
+    send_event(RadioChannelEvent(msg->channels[0]));
 }
 
 void RosInterface::autopilot_msg_cb(const robocars_msgs::robocars_autopilot_output::ConstPtr& msg) {
