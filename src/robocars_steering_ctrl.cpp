@@ -219,7 +219,7 @@ class onAutonomousDriving
         };
 
         void react (AutopilotEvent const & e) override {
-            ri->controlActuatorFromAutopilot(e.autopilot_value); 
+            ri->controlActuatorFromAutopilot(e.autopilot_value, e.carId); 
         };
 
         virtual void react(TickEvent                      const & e) override { 
@@ -285,7 +285,8 @@ void RosInterface::channels_msg_cb(const robocars_msgs::robocars_radio_channels:
 }
 
 void RosInterface::autopilot_msg_cb(const robocars_msgs::robocars_autopilot_output::ConstPtr& msg) {
-        send_event(AutopilotEvent(msg->norm));
+        unsigned int carId = stoi(msg->header.frame_id);
+        send_event(AutopilotEvent(msg->norm, carId));
 }
 
 void RosInterface::state_msg_cb(const robocars_msgs::robocars_brain_state::ConstPtr& msg) {
@@ -321,19 +322,21 @@ void RosInterface::controlActuatorFromRadio (uint32_t steering_value) {
 
     steeringMsg.header.stamp = ros::Time::now();
     steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = "mainSteering";
+    steeringMsg.header.frame_id = "0";
     steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
     steeringMsg.norm = mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value);
 
     act_steering_pub.publish(steeringMsg);
 }
 
-void RosInterface::controlActuatorFromAutopilot (_Float32 steering_value) {
+void RosInterface::controlActuatorFromAutopilot (_Float32 steering_value,  __uint32_t carId) {
     robocars_msgs::robocars_actuator_output steeringMsg;
+    char frame_id[100];
+    snprintf(frame_id, sizeof(frame_id), "%d", carId);
 
     steeringMsg.header.stamp = ros::Time::now();
     steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = "mainSteering";
+    steeringMsg.header.frame_id = frame_id;
     steeringMsg.pwm = (uint32_t) mapRange(-1.0,1.0,(_Float32) command_output_min,(_Float32)command_output_max,steering_value);
     steeringMsg.norm = steering_value;
 
