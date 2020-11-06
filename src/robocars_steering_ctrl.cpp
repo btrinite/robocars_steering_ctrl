@@ -349,7 +349,7 @@ void RosInterface::maintainIdleActuator () {
 
     steeringMsg.header.stamp = ros::Time::now();
     steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = "idleSteering";
+    steeringMsg.header.frame_id = "0";
     steeringMsg.pwm = 1500;
     steeringMsg.norm = 0.0;
 
