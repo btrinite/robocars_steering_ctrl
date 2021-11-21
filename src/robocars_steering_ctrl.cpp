@@ -45,6 +45,8 @@
 #include <cmath>
 
 #include <std_msgs/Int16MultiArray.h>
+#include <std_msgs/Int16.h>
+#include <std_msgs/Float32.h>
 
 #include <robocars_msgs/robocars_actuator_output.h>
 #include <robocars_msgs/robocars_actuator_ctrl_mode.h>
@@ -272,7 +274,8 @@ void RosInterface::updateParam() {
 }
 
 void RosInterface::initPub () {
-    act_steering_pub = nh.advertise<robocars_msgs::robocars_actuator_output>("output", 10);
+    act_steering_output_pub = nh.advertise<std_msgs::Int16>("output", 10);
+    act_steering_norm_pub = nh.advertise<std_msgs::Float32>("norm", 10);
 }
 
 void RosInterface::initSub () {
@@ -320,42 +323,40 @@ void RosInterface::mode_msg_cb(const robocars_msgs::robocars_actuator_ctrl_mode:
 
 void RosInterface::controlActuatorFromRadio (uint32_t steering_value) {
 
-    robocars_msgs::robocars_actuator_output steeringMsg;
+    std_msgs::Int16 steeringOutputMsg;
+    std_msgs::Float32 steeringNormMsg;
 
-    steeringMsg.header.stamp = ros::Time::now();
-    steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = "0";
-    steeringMsg.pwm = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
-    steeringMsg.norm = mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value);
+    steeringOutputMsg.data = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
+    steeringNormMsg.data = mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value);
 
-    act_steering_pub.publish(steeringMsg);
+    act_steering_output_pub.publish(steeringOutputMsg);
+    act_steering_norm_pub.publish(steeringNormMsg);
 }
 
 void RosInterface::controlActuatorFromAutopilot (_Float32 steering_value,  __uint32_t carId) {
-    robocars_msgs::robocars_actuator_output steeringMsg;
+    std_msgs::Int16 steeringOutputMsg;
+    std_msgs::Float32 steeringNormMsg;
+
     char frame_id[100];
     snprintf(frame_id, sizeof(frame_id), "%d", carId);
 
-    steeringMsg.header.stamp = ros::Time::now();
-    steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = frame_id;
-    steeringMsg.pwm = (uint32_t) mapRange(-1.0,1.0,(_Float32) command_output_min,(_Float32)command_output_max,steering_value);
-    steeringMsg.norm = steering_value;
+    steeringOutputMsg.data = (uint32_t) mapRange(-1.0,1.0,(_Float32) command_output_min,(_Float32)command_output_max,steering_value);
+    steeringNormMsg.data = steering_value;
 
-    act_steering_pub.publish(steeringMsg);
+    act_steering_output_pub.publish(steeringOutputMsg);
+    act_steering_norm_pub.publish(steeringNormMsg);
 }
 
 void RosInterface::maintainIdleActuator () {
 
-    robocars_msgs::robocars_actuator_output steeringMsg;
+    std_msgs::Int16 steeringOutputMsg;
+    std_msgs::Float32 steeringNormMsg;
 
-    steeringMsg.header.stamp = ros::Time::now();
-    steeringMsg.header.seq=1;
-    steeringMsg.header.frame_id = "0";
-    steeringMsg.pwm = 1500;
-    steeringMsg.norm = 0.0;
+    steeringOutputMsg.data = 1500;
+    steeringNormMsg.data = 0.0;
 
-    act_steering_pub.publish(steeringMsg);
+    act_steering_output_pub.publish(steeringOutputMsg);
+    act_steering_norm_pub.publish(steeringNormMsg);
 }
 
 void RosInterface::initQualibration() {
