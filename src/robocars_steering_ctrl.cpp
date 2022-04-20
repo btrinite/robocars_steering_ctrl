@@ -360,6 +360,7 @@ void RosInterface::maintainIdleActuator () {
     robocars_msgs::robocars_actuator_output steeringNormMsg;
 
     steeringNormMsg.header.stamp = ros::Time::now();
+    steeringNormMsg.header.frame_id = "0";
 
     steeringNormMsg.pwm=steeringOutputMsg.data = 1500;
     steeringNormMsg.norm = 0.0;
