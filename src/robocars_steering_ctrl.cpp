@@ -327,6 +327,7 @@ void RosInterface::controlActuatorFromRadio (uint32_t steering_value) {
     robocars_msgs::robocars_actuator_output steeringNormMsg;
 
     steeringNormMsg.header.stamp = ros::Time::now();
+    steeringNormMsg.header.frame_id = "0";
 
     steeringNormMsg.pwm=steeringOutputMsg.data = mapRange(command_input_min,command_input_max,command_output_min,command_output_max,steering_value);
     steeringNormMsg.norm = mapRange((_Float32)command_input_min,(_Float32)command_input_max,-1.0,1.0,(_Float32)steering_value);
@@ -343,6 +344,8 @@ void RosInterface::controlActuatorFromAutopilot (_Float32 steering_value,  __uin
 
     char frame_id[100];
     snprintf(frame_id, sizeof(frame_id), "%d", carId);
+
+    steeringNormMsg.header.frame_id = frame_id;
 
     steeringNormMsg.pwm=steeringOutputMsg.data = (uint32_t) mapRange(-1.0,1.0,(_Float32) command_output_min,(_Float32)command_output_max,steering_value);
     steeringNormMsg.norm = steering_value;
